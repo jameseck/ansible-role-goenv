@@ -1,0 +1,38 @@
+---
+- name: Install packages
+  package:
+    name:
+    - git
+    - findutils # goenv uses find when listing the available versions
+    state: present
+
+- name: Clone goenv repo
+  git:
+    repo: https://github.com/syndbg/goenv.git
+    dest: "{{ goenv_dest_dir }}"
+    version: "{{ goenv_version }}"
+    update: yes
+
+- name: Install go
+  block:
+  - name: Find go versions
+    shell: "{{ goenv_dest_dir }}/bin/goenv install -l"
+    changed_when: false
+    register: __go_versions_raw
+
+  - name: Set fact for go versions
+    set_fact:
+      __go_versions: "{{ __go_versions_raw.stdout_lines | map('trim') | list }}"
+
+  - name: Fail if requested go versions aren't available
+    fail:
+      msg: "The requested go version {{ item }} is not available to install"
+    when: item not in __go_versions
+    loop: "{{ goenv_install_go_versions }}"
+
+  - name: Install requested go versions
+    shell: "{{ goenv_dest_dir }}/bin/goenv install -s {{ item }}"
+    changed_when: __go_install.stderr | length > 0
+    register: __go_install
+    loop: "{{ goenv_install_go_versions }}"
+  when: goenv_install_go_versions | length > 0

@@ -1,0 +1,5 @@
+---
+goenv_version: 1.23.3
+goenv_dest_dir: ~/.goenv
+goenv_install_go_versions:
+- 1.11.4
