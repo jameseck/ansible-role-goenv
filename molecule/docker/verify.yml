@@ -1,0 +1,14 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Stat goenv
+    stat:
+      path: ~/.goenv/bin/goenv
+    register: __goenv_bin_stat
+  - name: Check goenv binary exists
+    assert:
+      that: __goenv_bin_stat.stat.exists is truthy

@@ -2,7 +2,7 @@
 dependency:
   name: galaxy
 driver:
-  name: podman
+  name: docker
 platforms:
   - name: instance-goenv
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-fedora33}-ansible:latest"
@@ -12,7 +12,7 @@ platforms:
     # privileged: true
     tmpfs:
       - /run
-      - /tmp
+      - /tmp:exec,mode=777
     pre_build_image: true
 provisioner:
   name: ansible
