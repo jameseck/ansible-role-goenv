@@ -16,7 +16,7 @@
 - name: Install go
   block:
   - name: Find go versions
-    shell: "{{ goenv_dest_dir }}/bin/goenv install -l"
+    command: "{{ goenv_dest_dir }}/bin/goenv install -l"
     changed_when: false
     register: __go_versions_raw
 
@@ -31,7 +31,7 @@
     loop: "{{ goenv_install_go_versions }}"
 
   - name: Install requested go versions
-    shell: "{{ goenv_dest_dir }}/bin/goenv install -s {{ item }}"
+    command: "{{ goenv_dest_dir }}/bin/goenv install -s {{ item }}"
     changed_when: __go_install.stderr | length > 0
     register: __go_install
     loop: "{{ goenv_install_go_versions }}"
